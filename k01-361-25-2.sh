@@ -2,53 +2,54 @@
 # недоделано! 
 if [ "$(id -u)" != "0" ]; then
    echo "Ошибка! Скрипт запушен не от root пользователя."
-   exit 1
+  exit 1
 fi
-
+echo ""
+echo "Разработчик: Кустов Даниил"
+echo "Группа: K01-361"
+echo "Описание: Данная программа выводит права пользователя к файлу"
+echo ""
 echo "Начать выполнение? (y/n): ";
-yesno='y'
-while [ $yesno = "y" -o $yesno = "Y" ]; do                                             # проверка на наличие файла
-                                        read yesno; 
-                                        if [ $yesno = "y" -o $yesno = "Y" ]; then
+yn='y'
+while [ $yn = "y" -o $yn = "Y" ]; do                                             # проверка на наличие файла
+                                        read yn; 
+                                        if [ $yn = "y" -o $yn = "Y" ]; then
 	clear
 echo "Введите имя пользователя"
 	read USERNAME
 	clear 
 	while ! [ $(getent passwd $USERNAME ) ]; do                                                 # проверка на наличие пользователя
                            echo "Такого пользователя не существует. Повторить? (y/n)"
-		           read yesno
-		           if [ $yesno = "y" -o $yesno = "Y" ]; then
+		           read yn
+		           if [ $yn = "y" -o $yn = "Y" ]; then
 		                                                clear
 		                                                echo "Введите имя пользователя:"
-		                                                read USERNAME								
-		           elif [ $yesno = "n" -o $yesno = "N" ]; then
+		                                                read USERNAME							
+		           elif [ $yn = "n" -o $yn = "N" ]; then
 		                                                  clear  
 		                                                  echo "Программа завершена!"
 								  echo "Разработчик: Кустов Даниил"
 								  echo "Группа: K01-361"
-		                                                  exit 0
+			                                     exit 0
 		           else 
-		           while ! [ $yesno = "n" -o $yesno = "N" -o $yesno = "y" -o $yesno = "Y" ]
+		           while ! [ $yn = "n" -o $yn = "N" -o $yn = "y" -o $yn = "Y" ]
 		                            do
 		                            echo "Ошибка ввода! Введите y/n:"
-		                            read yesno
-		                            if [ $yesno = "y" -o $yesno = "Y" ]; then
+		                            read yn
+		                            if [ $yn = "y" -o $yn = "Y" ]; then
 					    clear
 		                            echo "Введите имя пользователя:"
 		                            read USERNAME
-		                            elif [ $yesno = "n" -o $yesno = "N" ]; then 
+		                            elif [ $yn = "n" -o $yn = "N" ]; then 
 		                                                                   echo "Программа завершена!"
 									           echo "Разработчик: Кустов Даниил"
-									           echo "Группа: K01-361"
-		                                                                   exit 0
-		                                                                   
-		                            fi
+								           echo "Группа: K01-361"
+			                                                        exit 0
+		              fi
 		          done
 		          fi
 	done
 	clear
-
-
 echo "Выберите действие:"
 echo "1) Установить дату истечения срока действия пароля"
 echo "2) Изменить командную оболочку пользователя"
@@ -86,67 +87,88 @@ echo "Изменена командная оболочка пользовате�
 esac;;
 3 )
 echo "Изменение домашней директории пользователя"
-echo ""
-echo "1) Выбрать существующую директорию"
-echo "2) Создать новую директорию"
-read case3
-case "$case3" in
-1)
 echo "Введите директорию:"
-read di
-	while ! [ -d $di ]; do echo "Такой директории не существует. Повторить? (y/n)"
-		           read yesno
-		           if [ $yesno = "y" -o $yesno = "Y" ]; then
+read dir1
+if ! [ -d $dir1 ]; then  echo "Такой директории не существует. Хотите создать новую директорию? (y/n)"
+		           read yn
+		           if [ $yn = "y" -o $yn = "Y" ]; then
 		                                                clear
-		                                                echo "Введите директорию:"
-		                                                read f
-		           elif [ $yesno = "n" -o $yesno = "N" ]; then
+		                                                echo "Введите новую директорию:"
+read dir1
+mkdir $dir1
+usermod -d $dir1 $USERNAME
+	grp=$(groups $USERNAME)           # группа нашего пользователя
+	string3=$grp
+	lgg=${#string3}
+	let "longg=$lgg-3" #
+	let "longg = $longg / 2"   # длина слова группы пользователя
+	length3=$longg
+	GROUP=${string3:0:length3}
+chown $USERNAME:$GROUP $dir1
+chmod 777 $dir1
+
+		                                                
+		           elif [ $yn = "n" -o $yn = "N" ]; then
 		                                                  clear  
 		                                                  echo "Программа завершена!"
-								  echo "Разработчик: Кустов Даниил"
-								  echo "Группа: K01-361"
+							echo "Разработчик: Кустов Даниил"
+							echo "Группа: K01-361"			 	 
 		                                                  exit 0
 		           else 
-		           while ! [ $yesno = "n" -o $yesno = "N" -o $yesno = "y" -o $yesno = "Y" ]
+		           while ! [ $yn = "n" -o $yn = "N" -o $yn = "y" -o $yn = "Y" ]
 		                            do
 		                            echo "Ошибка ввода! Введите y/n:"
-		                            read yesno
-		                            if [ $yesno = "y" -o $yesno = "Y" ]; then
+		                            read yn
+		                            if [ $yn = "y" -o $yn = "Y" ]; then
 					    clear
-		                            echo "Введите директорию:"
-		                            read di
-		                            elif [ $yesno = "n" -o $yesno = "N" ]; then 
+		                            echo "Введите новую директорию:"
+		                            read dir1
+		                           usermod -d $dir1 $USERNAME
+					grp=$(groups $USERNAME)           # группа нашего пользователя
+					string3=$grp
+					lgg=${#string3}
+					let "longg=$lgg-3" #
+					let "longg = $longg / 2"   # длина слова группы пользователя
+					length3=$longg
+					GROUP=${string3:0:length3}
+					chown $USERNAME:$GROUP $dir1
+					chmod 700 $dir1
+
+		                            elif [ $yn = "n" -o $yn = "N" ]; then 
 										   clear
-		                                                                   echo "Программа завершена!"
+		                                                                                 echo "Программа завершена!"
 									           echo "Разработчик: Кустов Даниил"
 									           echo "Группа: K01-361"
 		                                                                   exit 0
-		                                                                   
-		                            fi
+		                 fi
 		          done
 		          fi
-	done
-usermod -d $di $USERNAME
-;;
-2 ) 
-echo "Введите новую директорию:"
-read dir1
+else 
 usermod -d $dir1 $USERNAME
-;;
-esac
-
+	grp=$(groups $USERNAME)           # группа нашего пользователя
+	string3=$grp
+	lgg=${#string3}
+	let "longg=$lgg-3" #
+	let "longg = $longg / 2"   # длина слова группы пользователя
+	length3=$longg
+	GROUP=${string3:0:length3}
+chown $USERNAME:$GROUP $dir1
+chmod 700 $dir1
+   
+		          fi
 
 esac
  echo "Повторить? (y/n): ";
-	yesno=y
-				elif [ $yesno = "n" -o $yesno = "N" ]; then             
+	yn=y
+				elif [ $yn = "n" -o $yn = "N" ]; then             
 						echo "Прекращено пользователем."
-						clear
+								clear
 				else  echo "Ошибка ввода! Введите y/n:"
-				      yesno=y
+				      yn=y
 				fi
 done
 clear
 echo "Программа завершена!"
 echo "Разработчик: Кустов Даниил"
 echo "Группа: K01-361"
+echo "$GROUP и $USERNAME"
